@@ -83,8 +83,7 @@ function internet()
 function main()
 {
 	internet
-	# if [[ $? != 0  ]]; then 
-	if [[ $? == 0  ]]; then 
+	if [[ $? != 0  ]]; then 
 		echo -e -n '\e[91m'
 		slow "[-] Please Check Your Internet Connection."
 		echo -e -n '\e[0m'
