@@ -14,7 +14,7 @@ This Our Keylogger Software will silently captured and record all the keystrokes
 
 # Our Keylogger Software:
 
-Visit this site [https://github.com/evilfeonix/Key-Gen/wiki](https://github.com/evilfeonix/Key-Gen/wiki/Home) for detail on **Our Keylogger Software**
+Visit this site [https://github.com/evilfeonix/Key-Gen/wiki](https://github.com/evilfeonix/Key-Gen/wiki/Home) for more detail on **Our Keylogger Software**
 
 # Keylogger Generator Installation
 ```bash
